@@ -4,12 +4,23 @@ function formatUrl(url) {
     return '//bcw-getter.herokuapp.com/?url=' + encodeURIComponent(url)
 }
 
+//saving the spells
 let spells = {}
+//my saved/learned spells
 let mySpellbook = {}
 
 export default class SpellbookService {
+    forgetSpell(url) {
+        delete mySpellbook[url]
+    }
+    learnSpell(url) {
+        mySpellbook[url] = spells[url]
+    }
     constructor() {
+    }
 
+    get mySpellbook() {
+        return mySpellbook
     }
 
     getSpells(draw, drawError) {

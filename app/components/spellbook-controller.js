@@ -2,6 +2,7 @@ import SpellbookService from "./spellbook-service.js"
 
 let ss = new SpellbookService
 
+
 const app = document.getElementById('app')
 
 function draw(spells) {
@@ -10,29 +11,41 @@ function draw(spells) {
         template += `
         <div class="spell">
        <h3>${spell.name}</h3>
+       <button onclick="app.controllers.spellbook.viewSpell('${spell.url}')">View Spell</button>
        <div id="${spell.name.split(' ').join('-')}"></div>
-       <button onclick="app.controllers.spellbook.viewSpell('${spell.url}')">View</button>
+       </div>
+       <div>
+        <div class="my-spellbook">
+        </div>
        </div>
        `
     });
     app.innerHTML = template
 }
 
+function drawMySpells() {
+    let template = ''
+    Object.values(ss.mySpellbook).forEach(spell => {
+        template += `
+         <div class="spell-details">
+         <h4>${spell.name}</h4>
+        <p><strong>Description: </strong>${spell.desc}</p>
+        <button onclick="app.controllers.spellbook.forgetSpell('${spell.url}')">Forget Spell!</button>
+         </div>
+        `
+    })
+    document.getElementById('my-spellbook').innerHTML = template
+}
+
 function drawSpell(spell) {
     let template = `
     <div class="spell-details">
     <p><strong>Description: </strong>${spell.desc}</p>
-    <p><strong>Description: </strong>${spell.desc}</p>
-    <p><strong>Description: </strong>${spell.desc}</p>
-    <p><strong>Description: </strong>${spell.desc}</p>
-
+    <button onclick="app.controllers.spellbook.learnSpell('${spell.url}')">Learn Spell!</button>
     </div>
     `
     document.getElementById(spell.name.split(' ').join('-')).innerHTML = template
-
-
 }
-
 
 export default class SpellbookController {
     constructor() {
@@ -41,5 +54,15 @@ export default class SpellbookController {
     }
     viewSpell(url) {
         ss.getSpell(url, drawSpell)
+    }
+
+    learnSpell(url) {
+        ss.learnSpell(url)
+        drawMySpells()
+    }
+
+    forgetSpell(url) {
+        ss.forgetSpell(url)
+        drawMySpells()
     }
 }
